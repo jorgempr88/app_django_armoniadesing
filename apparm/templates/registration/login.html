@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+<!----- title on tab  --------->
+{% block title %} Login {% endblock title %}
+<!----- navbar content------->
+{% block navbar-content %}
+<i class="fas fa-key"></i>&nbsp; &nbsp; Login
+{% endblock navbar-content %}
+
+
+<!--   button navbar   -->
+
+{% block nav-btn %}
+    <a href="{% url 'frontend' %}" class="btn btn-outline-primary border-light text-light btn-sm text-small" id="btn-nav">GO back</a>
+    <a href="{% url 'frontend' %}" class="text-light" id="front-nav-icon"><i class="fas fa-angle-double-left"></i></a>
+{% endblock nav-btn %}
+
+
+<!--- contrent page-->
+{% block content %}
+<style>
+    body{
+        background-image: url("/static/img/remodelacion.jpg");
+        background-position: center 0px;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+</style>
+
+<div class="container mt-5" id="card-login">
+    <div class="card p-3  login-border">
+       <span class="btn btn-outline-dark mt-3" style="cursor: default;" id="title-login"><i class="fas fa-lock"></i>&nbsp; Area restringida</span>
+
+        <form action="" method="POST" autocomplete="off" novalidate>
+            {% csrf_token %}
+            <div class="input-group mb-3 mt-5">
+                <span class="input-group-text">
+                    <i class="fas fa-user-alt"></i>
+                </span>
+                <input type="text" class="form-control text-small" name="username" placeholder="Usuario">
+            </div>
+
+            <div class="input-group mb-3 mt-5">
+                <span class="input-group-text">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <input type="password" class="form-control text-small" name="password" placeholder="Password">
+            </div>
+            <div class="d-grid gap-2">
+            <input type="submit" class="btn btn-primary btn-sm mt-4 mb-3 " value="Enter" id="btn-enter">
+            </div>
+        </form>
+    </div>
+    <!-- Message from backend -->
+    {% if form.errors %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        swal("Denegado ! ", "Ingrese los datos correctamente", "error" )
+    </script>
+    {% endif %}
+
+</div> <!--End container -->
+{% endblock content  %}

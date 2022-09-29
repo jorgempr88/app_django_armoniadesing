@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+<!----- title on tab  --------->
+{% block title %} add Proveedor {% endblock title %}
+
+
+<!----- navbar content------->
+{% block navbar-content %}
+<i class="fas fa-user-plus"></i>&nbsp; &nbsp; Add Proveedor
+{% endblock navbar-content %}
+
+
+<!---- time content ----->
+{% block time %} 
+<div class="col-sm">
+    <center>
+        <span style="color:#89cff0 ;" id="clock" ></span>
+    </center>
+</div>
+{% endblock time %}
+
+
+<!--   button navbar   -->
+{% block nav-btn %}
+<div class="text-light" id="side-bar" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+    <i class="fas fa-bars"></i>
+</div>
+{% endblock nav-btn %}
+
+
+<!-- Sidebar-->
+{% block body-sidebar %}
+<div class="d-grid gap-2">
+    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Logout</button>
+    {% if request.user.is_superuser %}
+    <a href="{% url 'admin:index' %}" target="_blank" class="btn btn-outline-primary btn-sm mb-3">Admin</a>
+    {% else %}
+    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#supportModal">Soporte</button> <!-- DO NOT FORGET to pass the sidebar data-bs -->
+    {% endif %}
+</div>
+{% endblock body-sidebar %}
+
+
+<!------- CONTENT PAGE -------->
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+           <div class="card card-body border-dark text-primary mt-3">
+                <span class="text-center txt-sm" id="info">{%block card-title%} Rellene el siguiente formulario {% endblock card-title%}</span>
+            </div>
+
+            <!------- FORM ---------->
+            <form {% block Action %}action="/add_proveedor" {% endblock Action %} method="POST" enctype="multipart/form-data" class="card p-3 border-dark mt-2">
+                {% csrf_token %} 
+
+                <!-- ======== Block id hidden here ========-->
+                {% block Value-id %} {% endblock Value-id %}
+
+
+                <div class="input-group input-group-sm mb-3">
+                    <span class="side-label btn border-secondary bg-light txt-sm"><i class="fas fa-user-alt"></i></span>
+                    <input type="text" class="form-control" name="nombre" maxlength="50" id="nombre" placeholder="Nombre proveedor" required {% block value-nombre %} {% endblock value-nombre %}>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <span class="side-label btn border-secondary bg-light txt-sm"><i class="fas fa-phone-alt"></i></span>
+                    <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Telefono proveedor" required {% block Value-telefono %} {% endblock Value-telefono %}>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <span class="side-label btn border-secondary bg-light txt-sm"><i class="fas fa-envelope"></i></span>
+                    <input type="text" class="form-control" name="email" maxlength="40" id="email" placeholder="Email proveedor" required {% block Value-email %} {% endblock Value-email %}>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <span class="side-label btn border-secondary bg-light txt-sm"><i class="fas fa-house-user"></i></span>
+                    <input type="text" class="form-control" name="direccion" id="direccion" maxlength="70" placeholder="Direccion proveedor" required {% block Value-direccion %} {% endblock Value-direccion %}>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <span class="side-label btn border-secondary bg-light txt-sm"><i class="fas fa-hashtag"></i></span>
+                    <input type="text" class="form-control" name="rrss" maxlength="70" id="rrss" placeholder="RRSS proveedor" required {% block Value-rrss %} {% endblock Value-rrss %}>
+                </div>
+
+
+                <div class="form-group">
+                    <textarea class="form-control text-small"  name="nota" maxlength="1000" id=""  rows="5" placeholder="Descripcion opcional">{% block Value-nota %} {% endblock Value-nota %}</textarea>
+                </div>
+
+                <!-- desktop and table button-->
+                <div class="mt-4" style="width: 100%;" id="btn-desktop">   
+                    <button type="submit" class="btn btn-outline-primary mb-3 btn-add">
+                        {% block button-content1 %}
+                        <i class="fas fa-plus"></i>&nbsp;&nbsp; Add proveedor
+                        {% endblock button-content1 %}
+                    </button>
+                    <a href="{% url 'backend' %}" class="btn btn-outline-dark mb-3 ms-2" style="width: 50px;" title="Back">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <button type="reset" class="btn btn-outline-secondary mb-3 ms-2" style="width: 50px;" title="Reset">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+
+
+                <!--smartphone button -->
+                <div id="btn-smartphone">
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="submit" class="btn btn-primery btn-sm txt-sm btn-add">
+                        {% block Btn-content %}<i class="fas fa-plus">&nbsp;&nbsp; Add</i>{% endblock Btn-content %}
+                        </button>
+
+                        <!------- Reset denied here  --------->
+                        {% block Btn-reset %} {% endblock Btn-reset %}
+
+                        <a href="{% url 'backend' %}" class="btn btn-dark btn-sm" id="btn-back"><i class="fas fa-chevron-left"></i>&nbsp;&nbsp; Back</a>
+                        <button type="reset" class="btn btn-secondary btn-sm txt-sm"><i class="fas fa-sync-alt">&nbsp;&nbsp; Reset</i></button>
+                    </div>
+                </div>
+                <!---- input ID denied here ---->
+                {% block Id-hidden %} {% endblock Id-hidden %}
+
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!--Messages from backend -->
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script> 
+            var m = "{{message}}";
+            swal("Denegado !", m, "error")
+        </script>
+
+    {% endif %}
+{% endfor %}
+
+<br><br><br>
+
+{% endblock content %}

@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+<!----- title on tab  --------->
+{% block title %} Todos los Proveedores {% endblock title %}
+
+
+<!----- navbar content------->
+{% block navbar-content %}
+<i class="fas fa-clipboard"></i>&nbsp; &nbsp; Proveedores
+{% endblock navbar-content %}
+
+
+<!---- time content ----->
+{% block time %} 
+<div class="col-sm">
+    <center>
+        <span style="color:#89cff0 ;" id="clock" ></span>
+    </center>
+</div>
+{% endblock time %}
+
+
+<!--   button navbar   -->
+{% block nav-btn %}
+<div class="text-light" id="side-bar" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+    <i class="fas fa-bars"></i>
+</div>
+{% endblock nav-btn %}
+
+
+<!-- Sidebar-->
+{% block body-sidebar %}
+<div class="d-grid gap-2">
+    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Logout</button>
+    {% if request.user.is_superuser %}
+    <a href="{% url 'admin:index' %}" target="_blank" class="btn btn-outline-primary btn-sm mb-3">Admin</a>
+    {% else %}
+    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#supportModal">Soporte</button> <!-- DO NOT FORGET to pass the sidebar data-bs -->
+    {% endif %}
+    <hr>
+    <div class="text-center mt-3">Total de Proveedores: {{count}} </div>
+</div>
+{% endblock body-sidebar %}
+
+
+
+<!--- contrent page-->
+{% block content %}
+<div class="container">
+
+    <br><br>
+
+    <div class="d-flex justify-content-between">
+        <!---- 1) columna add proveedor  ----->
+        <a href="{% url 'add_proveedor' %}" id="btn-add-desktop" class="btn btn-outline-primary btn-sm text-sm"><i class="fas fa-plus"></i>&nbsp;&nbsp; Nuevo proveedor</a>
+        <a href="{% url 'add_proveedor' %}" id="btn-add-smartphone" class="btn btn-outline-primary btn-sm" id="add-proveedor"><i class="fas fa-plus"></i></a>
+        <!-- 2) columna get user--->
+        <span class="bienvenido">
+            Bienvenido: <strong><span class="text-primary">{{user.get_username}}</span></strong>
+        </span>
+    
+    </div>
+
+    <form action="">
+        <div class="input-group input-group-sm mb-3 mt-4">
+            <input type="text" name="q" class="form-control" placeholder="buscar por" value="{{ request.GET.q}}">
+            <button class="btn- btn-secondary"><i class="fas fa-search"></i></button>
+            <a href="{% url 'backend' %}" class="btn btn-dark" style="margin-left:2px ;"><i class="fas fa-sync-alt"></i></a>
+        </div>
+    </form>
+
+    <center>
+        <table class="table table-bordered table-sm mt-4" style="text-align: center; font-size: 14px;">
+            <head class="table-secondary">
+                <tr>
+                    <th style="width: 14%;">Nombre</th>
+                    <th style="width: 14%;">Telefono</th>
+                    <th style="width: 18%;">Email</th>
+                    <th style="width: 20%;">Direccion</th>
+                    <th style="width: 13%;">Redes</th>
+                    <th style="width: 13%;">Registro</th>
+                    {% if request.user.is_superuser %}
+                    <th style="width: 8%;" colspan="2">Accion</th>
+                    {% else %}
+                    <th style="width: 8%;" colspan="2">Editar</th>
+                    {% endif %}
+                </tr>
+            </head>
+            <!-- DATA FROM BACKEND -->
+            {% for prove in proveedor %}
+            <tr class="text-small" id="chk_td">
+                <td data-label="Nombre" id="top-table">{{prove.nombre}}</td>
+                <td data-label="Telefono" id="responsive-border">{{prove.telefono}}</td>
+                <td data-label="Email" id="responsive-border">{{prove.email}}</td>
+                <td data-label="Direccion" id="responsive-border">{{prove.direccion}}</td>
+                <td data-label="Rrss" id="responsive-border">{{prove.rrss}}</td>
+                <td data-label="Fecha" id="responsive-border">{{prove.created_at | date:'m/d/Y (H:i)'}}</td>
+                <td>
+                    <a href="/provee/{{ prove.id }}" class="btn btn-primary btn-action" title="Edit Proveedor">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                </td>
+                {% if request.user.is_superuser %}
+                <td>
+                    <a class="btn btn-secondary btn-action" title="Delete Proveedor" data-bs-toggle="modal" data-bs-target="#deleteModal{{prove.pk}}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+
+             <!----- delete confirmation ------->
+            
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal{{prove.pk}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"><i class="fas fa-trash-alt"></i>&nbsp;&nbsp; Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="text-center text-danger"><i class="far fa-times-circle fa-5x mb-4 mt-2 "></i></div>
+                        <div class="text-center text-danger">
+                            <span class="confirm">Estas seguro de que queires borrar al proveedor?</span>
+                            <div class="text-dark mt-3 mb-2 text-small">Proveedor: <strong>{{ prove.nombre }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="/delete_proveedor/{{ prove.id }}" type="button" id="btn-delete" class="btn btn-outline-danger btn-sm">Borrar</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        </table>
+    </center>
+
+    <!-- PAGINACION -->
+
+    <nav class="mt-4" aria-label="Page navigation example" id="pagination">
+        {% if proveedor.has_other_pages %}
+        <ul class="pagination justify-content-left">
+            {% if proveedor.has_previous %}
+            <a href="?page=1" class="btn btn-outline-primary mb-4" id="firts" style="width: 60px; border-radius: 1px; border: 1px solid #d3d3d3">Inicio</a>
+            <li class="page-item"><a href="?page={{proveedor.previous_page_number}}" class="page-link"><i class="fas fa-angle-double-left"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"></li>
+            {% endif %}
+
+            {% for i in proveedor.paginator.page_range %}
+            {% if proveedor.number == i %}
+            <li class="page-item active"><span class="page-link">{{i}}<span class="sr-only"></span></span></li>
+            {% else %}
+            <li class="page-item"><a href="?page={{ i }}" class="page-link">{{i}}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if proveedor.has_next %}
+            <li class="page-item"><a href="?page={{proveedor.next_page_number}}" class="page-link"><i class="fas fa-angle-double-right"></i></a></li>
+            <a href="?page={{ proveedor.paginator.num_pages}}" id="last" class="btn btn-outline-primary mb-4" style="width: 60px; border-radius: 1px; border: 1px solid #d3d3d3; border-left: none;">Final</a>
+            {% else %}
+
+            <li class="page-item disabled"></li>
+
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+
+    <!--Messages from backend -->
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script> 
+            var m = "{{message}}";
+            swal("Perfecto !", m, "success")
+        </script>
+        
+        {% endif %}
+    {% endfor %}
+
+    <!----- validation , no proveedor show message -------->
+    <span class="text-danger" id="no-data"></span>
+
+
+
+</div><!-- END container-->
+
+<br><br>
+{% endblock content %}

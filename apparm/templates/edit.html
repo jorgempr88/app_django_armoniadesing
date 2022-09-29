@@ -1,0 +1,48 @@
+{% extends 'add.html' %}
+
+<!----- title on tab  --------->
+{% block title %} Proveedor {% endblock title %}
+
+
+<!----- navbar content------->
+{% block navbar-content %}
+<i class="fas fa-user-edit"></i>&nbsp; &nbsp; {{proveedor.nombre}}
+{% endblock navbar-content %}
+
+
+<!---- title in card ----->
+{%block card-title%} Registrado el: <span class="text-secondary"><strong> {{proveedor.created_at | date:'m/d/Y (H:i)'}}</strong></span> {% endblock card-title%}
+
+<!-- ADD BUTTON DESKTOP AND TABLE-->
+{% block button-content1 %} <i class="fas fa-server"></i>&nbsp;&nbsp; Save {% endblock button-content1 %}
+
+<!----  ADD butto SMARTPHONE ------->
+{% block Btn-content %}<i class="fas fa-hdd" id="btn-up">&nbsp;&nbsp; Save</i>{% endblock Btn-content %}
+
+
+<!---- block action <URL>  --------->
+{% block Action %} action="/edit_proveedor" {% endblock Action %}
+
+
+<!-- extends ======= <inputs> ========from add.html block -->
+<!--ID-->
+{% block Value-id %}
+<div class="input-group mb-3">
+    <span class="side-label btn border-secondary bg-light txt-sm"><i class="fas fa-key"></i> </span>
+    <input type="text" class="form-control txt-sm" name="id" value="{{ proveedor.id }}" readonly>
+</div>
+{% endblock Value-id %}
+<!--nombre-->
+{% block value-nombre %} value="{{ proveedor.nombre }}" {% endblock value-nombre %}
+<!--telefono-->
+{% block Value-telefono %} value="{{ proveedor.telefono }}" {% endblock Value-telefono %}
+<!--email-->
+{% block Value-email %} value="{{ proveedor.email }}" {% endblock Value-email %}
+<!--direccion-->
+{% block Value-direccion %} value="{{ proveedor.direccion }}" {% endblock Value-direccion %}
+<!--redes sociales-->
+{% block Value-rrss %} value="{{ proveedor.rrss }}" {% endblock Value-rrss %}
+<!--nota-->
+{% block Value-nota %} {{ proveedor.nota }} {% endblock Value-nota %}
+
+
